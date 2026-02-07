@@ -3,14 +3,7 @@ import ReactDOM from 'react-dom/client';
 
 const Footer = () => {
     return (
-        <div style={{
-            marginTop: '50px',
-            padding: '20px',
-            borderTop: '1px solid #dee2e6',
-            textAlign: 'center',
-            color: '#6c757d',
-            backgroundColor: '#f8f9fa'
-        }}>
+        <div class="react-footer">
             <p style={{ margin: '0', fontWeight: '500' }}>
                 © 2024 Task4. Все права защищены.
             </p>
