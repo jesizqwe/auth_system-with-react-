@@ -5,10 +5,10 @@ const Footer = () => {
     return (
         <div class="react-footer">
             <p style={{ margin: '0', fontWeight: '500' }}>
-                © 2024 Task4. Все права защищены.
+                © 2026 Task4. Все права не защищены.
             </p>
             <p style={{ margin: '5px 0 0 0', fontSize: '0.9rem' }}>
-                Разработано: <strong>Твое Имя</strong>
+                Разработано: <strong>Кирчук Александр</strong>
             </p>
             <p style={{ margin: '5px 0 0 0', fontSize: '0.85rem' }}>
                 Fullstack Developer | React | Node.js
