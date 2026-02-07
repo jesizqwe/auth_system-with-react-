@@ -23,30 +23,50 @@ const Dashboard = () => {
 
   const updateStatus = async (status) => {
     await fetch('/api/user', {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ids: selectedIds, status })
-    });
-    fetchUsers();
-    setSelectedIds([]);
-  };
-
-  const deleteUsers = async () => {
-    if (!confirm('Удалить выбранных?')) return;
-    await fetch('/api/user', {
-      method: 'DELETE',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ids: selectedIds })
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ids: selectedIds, status })
     });
 
     const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
-    if (selectedIds.includes(currentUser.id)) {
-      window.location.reload(); 
-    } else {
-      fetchUsers();
-      setSelectedIds([]);
+    
+    if (status === 'blocked' && selectedIds.includes(currentUser.id)) {
+        localStorage.removeItem('currentUser');
+        window.location.reload();
+        return;
     }
-  };
+
+    fetchUsers();
+    setSelectedIds([]);
+};
+
+  const deleteUsers = async () => {
+    if (!confirm('Удалить выбранных?')) return;
+    
+    try {
+        const res = await fetch('/api/user', {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ids: selectedIds })
+        });
+
+        if (!res.ok) throw new Error('Ошибка удаления');
+
+        const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+
+        if (selectedIds.includes(currentUser.id)) {
+            localStorage.removeItem('currentUser');
+            
+            window.location.reload(); 
+        } else {
+            fetchUsers();
+            setSelectedIds([]);
+        }
+    } catch (error) {
+        console.error(error);
+        alert('Не удалось удалить пользователей');
+    }
+};
 
   const deleteUnverified = async () => {
     if (!confirm('Удалить всех неподтвержденных?')) return;
