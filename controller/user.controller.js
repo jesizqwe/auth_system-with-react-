@@ -27,10 +27,8 @@ class UserController {
     async verifyUser(req, res) {
         try {
             const {id} = req.query
-            if (!id) {
-                return res.status(400).send('Отсутствует идентификатор пользователя')
-            }
-            await db.query("UPDATE users SET status = 'active' WHERE id = $1", [id])
+            if (!id) {return res.status(400).send('Отсутствует идентификатор пользователя')}
+            await db.query("UPDATE users SET status = 'active', is_verified = true WHERE id = $1", [id])
             // ИСПРАВЬ РЕДИРЕКТ:
             res.redirect(`${baseURL}/index.html?verified=true`)
         } catch (e) {
@@ -90,9 +88,26 @@ class UserController {
     async updateStatusUser(req, res) {
         const {ids, status} = req.body
         try {
-            await db.query('UPDATE users SET status = $1 WHERE id = ANY($2::int[])', [status, ids])
+            let queryText, queryParams;
+            if (status === 'active') {
+                queryText = `
+                    UPDATE users 
+                    SET status = CASE 
+                        WHEN is_verified = false THEN 'unverified' 
+                        ELSE 'active' 
+                    END 
+                    WHERE id = ANY($1::int[])
+                `;
+                queryParams = [ids];
+            } else {
+                queryText = 'UPDATE users SET status = $1 WHERE id = ANY($2::int[])';
+                queryParams = [status, ids];
+            }
+
+            await db.query(queryText, queryParams);
             res.json({success: true})
         } catch (e) {
+            console.error(e)
             res.status(500).json({message: 'Ошибка обновления статуса'})
         }
     }
