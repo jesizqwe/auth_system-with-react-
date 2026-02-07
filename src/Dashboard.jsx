@@ -1,6 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
 
+const Footer = () => {
+    return (
+        <div style={{
+            marginTop: '50px',
+            padding: '20px',
+            borderTop: '1px solid #dee2e6',
+            textAlign: 'center',
+            color: '#6c757d',
+            backgroundColor: '#f8f9fa'
+        }}>
+            <p style={{ margin: '0', fontWeight: '500' }}>
+                © 2024 Task4. Все права защищены.
+            </p>
+            <p style={{ margin: '5px 0 0 0', fontSize: '0.9rem' }}>
+                Разработано: <strong>Твое Имя</strong>
+            </p>
+            <p style={{ margin: '5px 0 0 0', fontSize: '0.85rem' }}>
+                Fullstack Developer | React | Node.js
+            </p>
+        </div>
+    );
+};
+
 const Dashboard = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -209,8 +232,13 @@ const updateStatus = async (status) => {
 };
 
 const container = document.getElementById('react-dashboard-root');
-
 if (container) {
     const root = ReactDOM.createRoot(container);
     root.render(<Dashboard />);
+}
+
+const footerContainer = document.getElementById('react-footer-root');
+if (footerContainer) {
+    const footerRoot = ReactDOM.createRoot(footerContainer);
+    footerRoot.render(<Footer />);
 }
