@@ -21,25 +21,6 @@ const Dashboard = () => {
     }
   };
 
-  const updateStatus = async (status) => {
-    await fetch('/api/user', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ids: selectedIds, status })
-    });
-
-    const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
-    
-    if (status === 'blocked' && selectedIds.includes(currentUser.id)) {
-        localStorage.removeItem('currentUser');
-        window.location.reload();
-        return;
-    }
-
-    fetchUsers();
-    setSelectedIds([]);
-};
-
   const deleteUsers = async () => {
     if (!confirm('Удалить выбранных?')) return;
     
@@ -53,11 +34,16 @@ const Dashboard = () => {
         if (!res.ok) throw new Error('Ошибка удаления');
 
         const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+        const myId = currentUser.id;
 
-        if (selectedIds.includes(currentUser.id)) {
-            localStorage.removeItem('currentUser');
-            
-            window.location.reload(); 
+        console.log('Мой ID из LocalStorage:', myId, typeof myId);
+        console.log('Выбранные ID:', selectedIds);
+
+        const isDeleted = selectedIds.map(String).includes(String(myId));
+
+        if (isDeleted) {
+            localStorage.clear();
+            window.location.href = '/';
         } else {
             fetchUsers();
             setSelectedIds([]);
@@ -65,6 +51,33 @@ const Dashboard = () => {
     } catch (error) {
         console.error(error);
         alert('Не удалось удалить пользователей');
+    }
+};
+
+const updateStatus = async (status) => {
+    try {
+        const res = await fetch('/api/user', {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ids: selectedIds, status })
+        });
+
+        if (!res.ok) throw new Error('Ошибка обновления статуса');
+
+        const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+        const myId = currentUser.id;
+        const isBlocked = status === 'blocked' && selectedIds.map(String).includes(String(myId));
+
+        if (isBlocked) {
+            localStorage.clear();
+            window.location.href = '/';
+        } else {
+            fetchUsers();
+            setSelectedIds([]);
+        }
+    } catch (error) {
+        console.error(error);
+        alert('Не удалось обновить статус');
     }
 };
 
