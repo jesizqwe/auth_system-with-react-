@@ -16,7 +16,7 @@ const App = {
         const savedUser = localStorage.getItem('currentUser')
         if (savedUser) {
             this.currentUser = JSON.parse(savedUser)
-            this.showDashboard()
+            window.location.href = '/dashboard.html';
         } else {
             this.showLogin()
         }
