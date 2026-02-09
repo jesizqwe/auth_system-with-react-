@@ -44,6 +44,14 @@ const App = {
         return data
     },
 
+    switchView(id) {
+        document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+        const target = document.getElementById(id);
+        if (target) {
+            target.classList.add('active');
+        }
+    },
+
     showLogin() { this.switchView('view-login') },
     showRegister() { this.switchView('view-register') },
 
