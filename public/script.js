@@ -50,7 +50,8 @@ const App = {
     showDashboard() {
         document.getElementById('current-user-name').textContent = this.currentUser.name
         document.getElementById('nav-auth-controls').classList.remove('d-none')
-        this.switchView('view-dashboard') 
+        this.switchView('view-dashboard')
+        window.dispatchEvent(new Event('dashboard-visible'))
     },
 
     switchView(id) {

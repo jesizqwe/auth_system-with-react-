@@ -104,7 +104,21 @@ const updateStatus = async (status) => {
   };
 
   useEffect(() => {
+    const user = localStorage.getItem('currentUser');
+    if (!user) {
+      return; 
+    }
     fetchUsers();
+  }, []);
+
+  useEffect(() => {
+    const handleDashboardVisible = () => {
+      fetchUsers();
+    };
+    window.addEventListener('dashboard-visible', handleDashboardVisible);
+    return () => {
+      window.removeEventListener('dashboard-visible', handleDashboardVisible);
+    };
   }, []);
 
   const getStatusBadge = (status) => {
