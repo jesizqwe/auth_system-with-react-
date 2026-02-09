@@ -46,18 +46,6 @@ const App = {
 
     showLogin() { this.switchView('view-login') },
     showRegister() { this.switchView('view-register') },
-    
-    showDashboard() {
-        document.getElementById('current-user-name').textContent = this.currentUser.name
-        document.getElementById('nav-auth-controls').classList.remove('d-none')
-        this.switchView('view-dashboard')
-        window.dispatchEvent(new Event('dashboard-visible'))
-    },
-
-    switchView(id) {
-        document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'))
-        document.getElementById(id).classList.add('active')
-    },
 
     async logout() {
         try {
@@ -89,8 +77,7 @@ const App = {
                 const pass = document.getElementById('login-password').value
                 this.currentUser = await this.login(email, pass)
                 localStorage.setItem('currentUser', JSON.stringify(this.currentUser))
-                this.showDashboard()
-                this.showSuccess('Добро пожаловать!')
+                window.location.href = '/dashboard.html';
             } catch(err) { this.showError(err.message) }
         }
 

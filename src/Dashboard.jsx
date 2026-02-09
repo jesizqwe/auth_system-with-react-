@@ -3,7 +3,14 @@ import ReactDOM from 'react-dom/client';
 
 const Footer = () => {
     return (
-        <div class="react-footer">
+        <div className="react-footer" style={{
+            marginTop: '50px',
+            padding: '20px',
+            borderTop: '1px solid #dee2e6',
+            textAlign: 'center',
+            color: '#6c757d',
+            backgroundColor: '#f8f9fa'
+        }}>
             <p style={{ margin: '0', fontWeight: '500' }}>
                 © 2026 Task4. Все права не защищены.
             </p>
@@ -22,6 +29,10 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [selectedIds, setSelectedIds] = useState([]);
 
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
   const fetchUsers = async () => {
     try {
       setLoading(true);
@@ -36,7 +47,7 @@ const Dashboard = () => {
       setLoading(false);
     }
   };
-
+  
   const deleteUsers = async () => {
     if (!confirm('Удалить выбранных?')) return;
     
@@ -52,9 +63,6 @@ const Dashboard = () => {
         const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
         const myId = currentUser.id;
 
-        console.log('Мой ID из LocalStorage:', myId, typeof myId);
-        console.log('Выбранные ID:', selectedIds);
-
         const isDeleted = selectedIds.map(String).includes(String(myId));
 
         if (isDeleted) {
@@ -68,9 +76,9 @@ const Dashboard = () => {
         console.error(error);
         alert('Не удалось удалить пользователей');
     }
-};
+  };
 
-const updateStatus = async (status) => {
+  const updateStatus = async (status) => {
     try {
         const res = await fetch('/api/user', {
             method: 'PATCH',
@@ -95,31 +103,13 @@ const updateStatus = async (status) => {
         console.error(error);
         alert('Не удалось обновить статус');
     }
-};
+  };
 
   const deleteUnverified = async () => {
     if (!confirm('Удалить всех неподтвержденных?')) return;
     await fetch('/api/user/unverified', { method: 'DELETE' });
     fetchUsers();
   };
-
-  useEffect(() => {
-    const user = localStorage.getItem('currentUser');
-    if (!user) {
-      return; 
-    }
-    fetchUsers();
-  }, []);
-
-  useEffect(() => {
-    const handleDashboardVisible = () => {
-      fetchUsers();
-    };
-    window.addEventListener('dashboard-visible', handleDashboardVisible);
-    return () => {
-      window.removeEventListener('dashboard-visible', handleDashboardVisible);
-    };
-  }, []);
 
   const getStatusBadge = (status) => {
     if (status === 'active') return 'bg-success';
@@ -234,18 +224,10 @@ const updateStatus = async (status) => {
           </table>
         )}
       </div>
+      <Footer />
     </div>
   );
 };
 
-const container = document.getElementById('react-dashboard-root');
-if (container) {
-    const root = ReactDOM.createRoot(container);
-    root.render(<Dashboard />);
-}
-
-const footerContainer = document.getElementById('react-footer-root');
-if (footerContainer) {
-    const footerRoot = ReactDOM.createRoot(footerContainer);
-    footerRoot.render(<Footer />);
-}
+const root = ReactDOM.createRoot(document.getElementById('react-dashboard-root'));
+root.render(<Dashboard />);
